@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/your-username/bookstore/models"
+	"github.com/yvann77/bookstore/models"
 )
 
 func TestGetBooks(t *testing.T) {
