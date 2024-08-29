@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -12,15 +13,39 @@ import (
 	"github.com/yvann77/bookstore/models"
 )
 
-func TestGetBooks(t *testing.T) {
+var router *gin.Engine
+
+func TestMain(m *testing.M) {
 	// Force Gin en mode release
 	gin.SetMode(gin.ReleaseMode)
 
-	// Créer un routeur Gin
-	router := gin.Default()
+	// Créer une seule instance de Gin
+	router = gin.Default()
 
-	// Enregistrer la route pour GetBooks
+	// Enregistrer les routes
 	router.GET("/books", GetBooks)
+	router.POST("/books", PostBooks)
+	router.GET("/books/:id", GetBookByID)
+
+	// Exécuter les tests
+	code := m.Run()
+
+	// Arrêter le serveur Gin
+	// (Pas nécessaire dans ce cas, mais utile si tu utilises un serveur réel)
+	// router.Engine.Close()
+
+	os.Exit(code)
+}
+
+func TestGetBooks(t *testing.T) {
+	// Créer un mock du repository de livres
+	mockRepo := &MockBookRepository{}
+
+	// Ajouter le mock au contexte de Gin *dans le handler de test*
+	router.Use(func(c *gin.Context) {
+		c.Set("bookRepo", mockRepo)
+		c.Next()
+	})
 
 	// Créer une requête de test
 	req, err := http.NewRequest(http.MethodGet, "/books", nil)
@@ -37,14 +62,14 @@ func TestGetBooks(t *testing.T) {
 }
 
 func TestPostBooks(t *testing.T) {
-	// Force Gin en mode release
-	gin.SetMode(gin.ReleaseMode)
+	// Créer un mock du repository de livres
+	mockRepo := &MockBookRepository{}
 
-	// Créer un routeur Gin
-	router := gin.Default()
-
-	// Enregistrer la route pour PostBooks
-	router.POST("/books", PostBooks)
+	// Ajouter le mock au contexte de Gin *dans le handler de test*
+	router.Use(func(c *gin.Context) {
+		c.Set("bookRepo", mockRepo)
+		c.Next()
+	})
 
 	// Créer un livre de test
 	book := models.Book{
@@ -74,14 +99,14 @@ func TestPostBooks(t *testing.T) {
 }
 
 func TestGetBookByID(t *testing.T) {
-	// Force Gin en mode release
-	gin.SetMode(gin.ReleaseMode)
+	// Créer un mock du repository de livres
+	mockRepo := &MockBookRepository{}
 
-	// Créer un routeur Gin
-	router := gin.Default()
-
-	// Enregistrer la route pour GetBookByID
-	router.GET("/books/:id", GetBookByID)
+	// Ajouter le mock au contexte de Gin *dans le handler de test*
+	router.Use(func(c *gin.Context) {
+		c.Set("bookRepo", mockRepo)
+		c.Next()
+	})
 
 	// Créer une requête de test
 	req, err := http.NewRequest(http.MethodGet, "/books/1", nil)
