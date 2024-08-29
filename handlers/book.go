@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/your-username/bookstore/models"
+	"github.com/yvann77/bookstore/models"
 )
 
 func GetBooks(c *gin.Context) {

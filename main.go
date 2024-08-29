@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/your-username/bookstore/database"
-	"github.com/your-username/bookstore/routes"
+	"github.com/yvann77/bookstore/database"
+	"github.com/yvann77/bookstore/routes"
 )
 
 func main() {

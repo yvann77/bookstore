@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/your-username/bookstore/handlers"
+	"github.com/yvann77/bookstore/handlers"
 )
 
 func SetupBookRoutes(router *gin.Engine) {
