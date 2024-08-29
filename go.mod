@@ -1,4 +1,5 @@
-module example/bookstore
+module github.com/yvann77/bookstore
+
 
 go 1.23.0
 
