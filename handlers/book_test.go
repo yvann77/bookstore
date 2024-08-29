@@ -13,6 +13,9 @@ import (
 )
 
 func TestGetBooks(t *testing.T) {
+	// Force Gin en mode release
+	gin.SetMode(gin.ReleaseMode)
+
 	// Créer un routeur Gin
 	router := gin.Default()
 
@@ -34,6 +37,9 @@ func TestGetBooks(t *testing.T) {
 }
 
 func TestPostBooks(t *testing.T) {
+	// Force Gin en mode release
+	gin.SetMode(gin.ReleaseMode)
+
 	// Créer un routeur Gin
 	router := gin.Default()
 
@@ -68,6 +74,9 @@ func TestPostBooks(t *testing.T) {
 }
 
 func TestGetBookByID(t *testing.T) {
+	// Force Gin en mode release
+	gin.SetMode(gin.ReleaseMode)
+
 	// Créer un routeur Gin
 	router := gin.Default()
 
