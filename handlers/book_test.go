@@ -41,11 +41,17 @@ func TestGetBooks(t *testing.T) {
 	// Créer un mock du repository de livres
 	mockRepo := &MockBookRepository{}
 
+	// Créer un nouveau routeur pour le test
+	testRouter := gin.New()
+
 	// Ajouter le mock au contexte de Gin *dans le handler de test*
-	router.Use(func(c *gin.Context) {
+	testRouter.Use(func(c *gin.Context) {
 		c.Set("bookRepo", mockRepo)
 		c.Next()
 	})
+
+	// Enregistrer la route pour le test
+	testRouter.GET("/books", GetBooks)
 
 	// Créer une requête de test
 	req, err := http.NewRequest(http.MethodGet, "/books", nil)
@@ -55,7 +61,7 @@ func TestGetBooks(t *testing.T) {
 
 	// Exécuter la requête de test
 	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
+	testRouter.ServeHTTP(w, req)
 
 	// Vérifier la réponse
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -65,11 +71,17 @@ func TestPostBooks(t *testing.T) {
 	// Créer un mock du repository de livres
 	mockRepo := &MockBookRepository{}
 
+	// Créer un nouveau routeur pour le test
+	testRouter := gin.New()
+
 	// Ajouter le mock au contexte de Gin *dans le handler de test*
-	router.Use(func(c *gin.Context) {
+	testRouter.Use(func(c *gin.Context) {
 		c.Set("bookRepo", mockRepo)
 		c.Next()
 	})
+
+	// Enregistrer la route pour le test
+	testRouter.POST("/books", PostBooks)
 
 	// Créer un livre de test
 	book := models.Book{
@@ -92,7 +104,7 @@ func TestPostBooks(t *testing.T) {
 
 	// Exécuter la requête de test
 	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
+	testRouter.ServeHTTP(w, req)
 
 	// Vérifier la réponse
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -102,11 +114,17 @@ func TestGetBookByID(t *testing.T) {
 	// Créer un mock du repository de livres
 	mockRepo := &MockBookRepository{}
 
+	// Créer un nouveau routeur pour le test
+	testRouter := gin.New()
+
 	// Ajouter le mock au contexte de Gin *dans le handler de test*
-	router.Use(func(c *gin.Context) {
+	testRouter.Use(func(c *gin.Context) {
 		c.Set("bookRepo", mockRepo)
 		c.Next()
 	})
+
+	// Enregistrer la route pour le test
+	testRouter.GET("/books/:id", GetBookByID)
 
 	// Créer une requête de test
 	req, err := http.NewRequest(http.MethodGet, "/books/1", nil)
@@ -116,7 +134,7 @@ func TestGetBookByID(t *testing.T) {
 
 	// Exécuter la requête de test
 	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
+	testRouter.ServeHTTP(w, req)
 
 	// Vérifier la réponse
 	assert.Equal(t, http.StatusOK, w.Code)
