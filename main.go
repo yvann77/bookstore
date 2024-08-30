@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/yvann77/bookstore/database"
+	"github.com/yvann77/bookstore/handlers"
 	"github.com/yvann77/bookstore/routes"
 )
 
@@ -22,11 +23,20 @@ func main() {
 	router := gin.Default()
 
 	// Connecter à la base de données
-	db, err := database.Connect() // Utilise les variables d'environnement dans Connect()
+	db, err := database.Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	// Créer une instance de BookRepository avec la connexion à la base de données
+	bookRepo := &handlers.DatabaseBookRepository{DB: db}
+
+	// Injecter le BookRepository dans le contexte Gin
+	router.Use(func(c *gin.Context) {
+		c.Set("bookRepo", bookRepo)
+		c.Next()
+	})
 
 	// Enregistrer les routes
 	routes.SetupBookRoutes(router)

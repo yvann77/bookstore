@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -88,4 +89,48 @@ func GetBookByID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, book)
+}
+
+// DatabaseBookRepository implémente l'interface BookRepository en utilisant une base de données
+type DatabaseBookRepository struct {
+	DB *sql.DB
+}
+
+// Implémenter les méthodes de l'interface BookRepository pour DatabaseBookRepository
+func (r *DatabaseBookRepository) GetAllBooks() ([]models.Book, error) {
+	rows, err := r.DB.Query("SELECT * FROM books")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var books []models.Book
+	for rows.Next() {
+		var book models.Book
+		if err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Price); err != nil {
+			return nil, err
+		}
+		books = append(books, book)
+	}
+
+	return books, nil
+}
+
+func (r *DatabaseBookRepository) AddBook(book models.Book) error {
+	_, err := r.DB.Exec("INSERT INTO books (title, author, price) VALUES (?, ?, ?)", book.Title, book.Author, book.Price)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *DatabaseBookRepository) GetBookByID(id string) (*models.Book, error) {
+	var book models.Book
+	err := r.DB.QueryRow("SELECT * FROM books WHERE id = ?", id).Scan(&book.ID, &book.Title, &book.Author, &book.Price)
+	if err != nil {
+		return nil, err
+	}
+
+	return &book, nil
 }
